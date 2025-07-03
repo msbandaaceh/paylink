@@ -37,36 +37,13 @@ class MY_Controller extends CI_Controller
         }
 
         # Cek Data Aplikasi Ini
-        $params = [
-            'tabel' => 'ref_client_app',
-            'kolom_seleksi' => 'id',
-            'seleksi' => '2'
-        ];
-
-        $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
-
-        if ($result['status_code'] === 200 && $result['response']['status'] === 'success') {
-            $user_data = $result['response']['data'][0];
-            $this->session->set_userdata('nama_client_app', $user_data['nama_app']);
-            $this->session->set_userdata('deskripsi_client_app', $user_data['deskripsi']);
-        }
+        $this->model->cek_aplikasi();
 
         # Periksa apakah user login sebagai plh/plt atau bukan
         $token = "plh/plt";
         if ($this->session->userdata('status_plh') == '0') {
             if ($this->session->userdata('status_plt') == '0') {
-                $params = [
-                    'tabel' => 'v_users',
-                    'kolom_seleksi' => 'userid',
-                    'seleksi' => $this->session->userdata("userid")
-                ];
-
-                $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
-
-                if ($result['status_code'] === 200 && $result['response']['status'] === 'success') {
-                    $user_data = $result['response']['data'][0];
-                    $token = $user_data['token'];
-                }
+                $token = $this->model->get_token();
             }
         }
 

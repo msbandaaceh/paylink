@@ -25,6 +25,45 @@ class ModelGaji extends CI_Model
         $this->apihelper->post('api_audittrail', $data);
     }
 
+    public function cek_aplikasi()
+    {
+        $params = [
+            'tabel' => 'ref_client_app',
+            'kolom_seleksi' => 'id',
+            'seleksi' => '2'
+        ];
+
+        $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
+
+        if ($result['status_code'] === 200 && $result['response']['status'] === 'success') {
+            $user_data = $result['response']['data'][0];
+            $this->session->set_userdata(
+                [
+                    'nama_client_app' => $user_data['nama_app'],
+                    'deskripsi_client_app' => $user_data['deskripsi']
+                ]
+            );
+        }
+    }
+
+    public function get_token()
+    {
+        $params = [
+            'tabel' => 'v_users',
+            'kolom_seleksi' => 'userid',
+            'seleksi' => $this->session->userdata("userid")
+        ];
+
+        $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
+
+        if ($result['status_code'] === 200 && $result['response']['status'] === 'success') {
+            $user_data = $result['response']['data'][0];
+            $token = $user_data['token'];
+        }
+
+        return $token;
+    }
+
     public function get_data_peran_modal($id)
     {
         $data = [
@@ -274,7 +313,7 @@ class ModelGaji extends CI_Model
             return $e;
         }
     }
-    
+
     public function hapus_kategori($id)
     {
         $table = 'ref_potongan';
