@@ -61,4 +61,10 @@ class HalamanUtama extends MY_Controller
         $success = $this->model->ubah_status_peran($id, '1');
         echo json_encode(['st' => $success ? '1' : '0']);
     }
+
+    public function keluar()
+    {
+        $this->session->sess_destroy();
+        redirect($this->config->item('sso_server') . '/keluar');
+    }
 }
