@@ -5,6 +5,12 @@ class HalamanGaji extends MY_Controller
 {
     public function index()
     {
+        if ($this->session->userdata('status_plh') == '1' || $this->session->userdata('status_plt') == '1') {
+            $this->session->set_flashdata('info', '3');
+            $this->session->set_flashdata('pesan_gagal', 'Anda tidak memiliki akses');
+            redirect('/');
+        }
+
         $months = $this->model->get_all_months();
         foreach ($months as &$month) {
             $month['pegawai_count'] = $this->model->get_pegawai_count_by_month($month['month']);
@@ -16,7 +22,7 @@ class HalamanGaji extends MY_Controller
             'months' => $months,
             'page' => 'daftar',
             'side' => 'gaji',
-            'peran' => $this->peran
+            'peran' => $this->session->userdata('peran')
         );
 
         $this->load->view('header', $data);
@@ -34,7 +40,7 @@ class HalamanGaji extends MY_Controller
             'gaji' => $this->model->get_all_gaji_bulanan($bulan, $id_pegawai),
             'page' => 'daftar',
             'side' => 'gaji',
-            'peran' => $this->peran,
+            'peran' => $this->session->userdata('peran'),
             'bulan_gaji' => $bulan,
             'periode_gaji' => $bulan . "-01",
             'id_pegawai' => $id_pegawai
@@ -58,7 +64,7 @@ class HalamanGaji extends MY_Controller
         $data = array(
             'months' => $months,
             'page' => 'daftar',
-            'peran' => $this->peran,
+            'peran' => $this->session->userdata('peran'),
             'side' => 'potongan_gaji'
         );
 
@@ -105,7 +111,7 @@ class HalamanGaji extends MY_Controller
             $data = array(
                 'bulan_gaji' => $bulan,
                 'periode_gaji' => $bulan . "-01",
-                'peran' => $this->peran,
+                'peran' => $this->session->userdata('peran'),
                 'page' => 'daftar',
                 'side' => 'potongan_gaji'
             );

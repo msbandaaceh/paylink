@@ -8,7 +8,7 @@ class HalamanPengaturan extends MY_Controller
         $data = array(
             'page' => 'daftar',
             'side' => 'setting',
-            'peran' => $this->peran
+            'peran' => $this->session->userdata('peran')
         );
         $data['kategori'] = $this->model->show_all_kategori();
 

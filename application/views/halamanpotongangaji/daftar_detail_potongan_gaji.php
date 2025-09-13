@@ -17,7 +17,7 @@
                     <li class="active">
                         <a>
                             <i class="material-icons">list</i>Bulan
-                            <?= $this->tanggalhelper->convertMonthDate($bulan_gaji) ?>
+                            <?= $this->tanggalhelper->convertMonthDate($periode_gaji) ?>
                         </a>
                     </li>
                 </ol>

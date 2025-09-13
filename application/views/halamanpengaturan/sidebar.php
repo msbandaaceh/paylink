@@ -51,7 +51,7 @@
                 </a>
                 </li>
                 <?php
-                if ($peran == 'admin') {
+                if (in_array($peran, ['operator', 'admin'])) {
                     ?>
                     <?php if ($side == 'potongan_gaji') {
                         echo '<li class="active">';

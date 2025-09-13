@@ -21,7 +21,6 @@ class MY_Controller extends CI_Controller
         $this->jwt_key = $this->config->item('jwt_key'); // inisialisasi di sini
         $cookie_domain = $this->config->item('cookie_domain');
         $sso_server = $this->config->item('sso_server');
-        $this->session->set_userdata('sso_db', $this->config->item('sso_db'));
 
         $this->load->model('ModelGaji', 'model');
 
@@ -30,6 +29,7 @@ class MY_Controller extends CI_Controller
             if ($token) {
                 $this->cek_token($token);
             } else {
+                $this->session->sess_destroy();
                 $redirect_url = current_url();
                 setcookie('redirect_to', urlencode($redirect_url), time() + 300, "/", $cookie_domain);
                 redirect($sso_server . 'login');
@@ -37,31 +37,44 @@ class MY_Controller extends CI_Controller
         }
 
         # Cek Data Aplikasi Ini
-        $this->model->cek_aplikasi();
+        $this->model->cek_aplikasi($this->config->item('id_app'));
 
         # Periksa apakah user login sebagai plh/plt atau bukan
-        $token = "plh/plt";
-        if ($this->session->userdata('status_plh') == '0') {
-            if ($this->session->userdata('status_plt') == '0') {
-                $token = $this->model->get_token();
+        if (!$this->session->userdata('status_plh')) {
+            if (!$this->session->userdata('status_plt')) {
+                $params = [
+                    'tabel' => 'v_users',
+                    'kolom_seleksi' => 'userid',
+                    'seleksi' => $this->session->userdata("userid")
+                ];
+
+                $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
+
+                if ($result['status_code'] === 200 && $result['response']['status'] === 'success') {
+                    $user_data = $result['response']['data'][0];
+                    $this->session->set_userdata('jabatan', $user_data['jabatan']);
+                }
             }
         }
 
         #Cek peran pegawai
-        if ($this->session->userdata('role') == 'validator_uk_satker') {
-            $this->session->set_userdata('peran', 'validator');
-        }
-        
-        $query = $this->model->get_seleksi2('peran', 'userid', $this->session->userdata('userid'), 'hapus', '0');
-        if ($query->num_rows() > 0 || $this->session->userdata('super')) {
-            $this->peran = 'admin';
+        if (in_array($this->session->userdata('role'), ['super', 'validator_uk_satker', 'admin_satker'])) {
+            $this->session->set_userdata('peran', 'admin');
+        } else {
+            $query = $this->model->get_seleksi2('peran', 'userid', $this->session->userdata('userid'), 'hapus', '0');
+            if ($query->num_rows() > 0) {
+                $this->session->set_userdata('peran', $query->row()->role);
+            } else {
+                $this->session->set_userdata('peran', '');
+            }
         }
 
+        $this->session->set_userdata('logged_in', TRUE);
     }
 
     private function cek_token($token)
     {
-        $cookie_domain = $this->config->item('sso_server');
+        $cookie_domain = $this->session->userdata('sso_server');
         $sso_api = $cookie_domain . "api/cek_token?sso_token={$token}";
         $response = file_get_contents($sso_api);
         $data = json_decode($response, true);

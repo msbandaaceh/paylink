@@ -1,7 +1,7 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <?php if (in_array($this->session->userdata('peran'), ['validator']) || $this->session->userdata('super')) { ?>
+        <?php if ($peran == 'admin') { ?>
             <div class="row">
                 <div class="col">
                     <div class="align-right">

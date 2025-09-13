@@ -72,8 +72,7 @@ function ModalRole(id) {
 
                 $('#peran_').html('');
                 let role = `<select class="form-control" id="peran" name="peran" style="width:100%">`;
-                role += `<option value="validator">Validator Satker</option>`;
-                role += `<option value="petugas">Petugas Pengelola ABP</option>`;
+                role += `<option value="operator">Operator Keuangan</option>`;
                 role += `</select>`;
                 $('#peran_').append(role);
 
@@ -106,10 +105,8 @@ function ModalRole(id) {
                             </tr>
                         </thead><tbody>`;
                     json.data_peran.forEach(row => {
-                        if (`${row.peran}` == 'validator') {
-                            var peran = 'Validator Satker';
-                        } else {
-                            var peran = 'Petugas Pengelola ABP';
+                        if (`${row.peran}` == 'operator') {
+                            var peran = 'Operator Keuangan';
                         }
                         data += `
                         <tr>

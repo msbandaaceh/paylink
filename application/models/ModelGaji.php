@@ -14,23 +14,28 @@ class ModelGaji extends CI_Model
 
     private function add_audittrail($action, $title, $table, $descrip)
     {
-        $data = [
-            'action' => $action,
-            'title' => $title,
-            'table' => $table,
-            'description' => $descrip,
-            'username' => $this->session->userdata('username')
+        $params = [
+            'tabel' => 'sys_audittrail',
+            'data' => [
+                'datetime' => date("Y-m-d H:i:s"),
+                'ipaddress' => $this->input->ip_address(),
+                'action' => $action,
+                'title' => $title,
+                'tablename' => $table,
+                'description' => $descrip,
+                'username' => $this->session->userdata('username')
+            ]
         ];
 
-        $this->apihelper->post('api_audittrail', $data);
+        $this->apihelper->post('apiclient/simpan_data', $params);
     }
 
-    public function cek_aplikasi()
+    public function cek_aplikasi($id)
     {
         $params = [
             'tabel' => 'ref_client_app',
             'kolom_seleksi' => 'id',
-            'seleksi' => '2'
+            'seleksi' => $id
         ];
 
         $result = $this->apihelper->get('apiclient/get_data_seleksi', $params);
@@ -77,7 +82,7 @@ class ModelGaji extends CI_Model
         $pegawai = array();
         if ($users['status_code'] === '200') {
             foreach ($users['response']['data'] as $item) {
-                $pegawai[$item['userid']] = $item['nama_gelar'];
+                $pegawai[$item['userid']] = $item['fullname'];
             }
         }
 
@@ -351,39 +356,12 @@ class ModelGaji extends CI_Model
     {
         try {
             $this->db->insert($tabel, $data);
+            $title = "Tambah Data <br />Insert tabel <b>" . $tabel;
+            $descrip = null;
+            $this->add_audittrail("INSERT", $title, $tabel, $descrip);
             return 1;
         } catch (Exception $e) {
             return 0;
-        }
-    }
-
-    public function simpan_peran($input)
-    {
-        $id = $input['id'] ?? null;
-        $pegawai = $input['pegawai'] ?? null;
-        $peran = $input['peran'] ?? null;
-
-        if ($id) {
-            $data = [
-                'userid' => $pegawai,
-                'role' => $peran,
-                'modified_by' => $this->session->userdata('username'),
-                'modified_on' => date('Y-m-d H:i:s')
-            ];
-            return $this->pembaharuan_data('peran', $data, 'id', $id) === '1';
-        } else {
-            $cek = $this->get_seleksi('peran', 'userid', $pegawai);
-            if ($cek->num_rows() > 0) {
-                return 'duplikat';
-            }
-
-            $data = [
-                'userid' => $pegawai,
-                'role' => $peran,
-                'created_by' => $this->session->userdata('username'),
-                'created_on' => date('Y-m-d H:i:s')
-            ];
-            return $this->simpan_data('peran', $data) === '1';
         }
     }
 
