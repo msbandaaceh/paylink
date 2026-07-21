@@ -29,7 +29,7 @@ class HalamanPengaturan extends MY_Controller
                 "kategori" => $kategori
             );
 
-            $query = $this->model->simpan_data('ref_ref_potongan', $data);
+            $query = $this->model->simpan_data('ref_potongan', $data);
         } else {
             $data = array(
                 "kategori" => $kategori
