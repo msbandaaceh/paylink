@@ -181,13 +181,13 @@ class ModelGaji extends CI_Model
 
     public function get_all_potongan_bulanan_pegawai_json($bulan, $id)
     {
-        $this->db->select('rp.id AS id, rp.id_pegawai AS id_pegawai, g.nama_gelar AS nama, rp.id_potongan AS id_potongan, p.kategori AS kategori, rp.potongan AS potongan, rp.created_on AS created_on')
+        $this->db->select('rp.id AS id, rp.id_pegawai AS id_pegawai, g.nama_gelar AS nama, rp.id_potongan AS id_potongan, p.kategori AS kategori, p.urutan AS urutan, rp.potongan AS potongan, rp.created_on AS created_on')
             ->from("register_potongan_gaji rp")
             ->join("ref_potongan p", "rp.id_potongan = p.id", "left")
             ->join($this->db_sso . ".pegawai g", "rp.id_pegawai = g.id", "left")
             ->where("id_pegawai", $id)
             ->like("created_on", $bulan)
-            ->order_by("rp.id");
+            ->order_by("p.urutan");
         ;
 
         return $this->db->get()->result();
