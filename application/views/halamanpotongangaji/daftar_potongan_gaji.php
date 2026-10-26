@@ -33,14 +33,22 @@
                                 </a>
                                 <ul class="dropdown-menu pull-right">
                                     <li>
-                                        <a class="waves-effect waves-block">
-                                            <form action="<?= site_url('generate_gaji') ?>" method="POST">
-                                                <button id="upload"
-                                                    style="background: transparent; border: none !important;">
+                                        <form action="<?= site_url('generate_gaji') ?>" method="POST"
+                                            id="formGenerateGaji">
+                                            <button type="submit" id="btnGenerateGaji" style="
+                                                    background: transparent;
+                                                    border: none !important;
+                                                    width: 100%;
+                                                    text-align: left;
+                                                    padding: 8px 15px;
+                                                    color: #333;
+                                                    cursor: pointer;
+                                                ">
+                                                <span id="textGenerateGaji" style="display: inline-block; color: #333;">
                                                     Generate Gaji Pegawai
-                                                </button>
-                                            </form>
-                                        </a>
+                                                </span>
+                                            </button>
+                                        </form>
                                     </li>
                                 </ul>
                             </li>
@@ -66,7 +74,8 @@
                                                 <?= $no; ?>
                                             </td>
                                             <td>
-                                                <button id="bulan-gaji" onclick="detailPotonganBulan('<?= $month['month']; ?>')"
+                                                <button id="bulan-gaji"
+                                                    onclick="detailPotonganBulan('<?= $month['month']; ?>')"
                                                     style="background: transparent; border: none !important;"><?= $month['konversi_tgl']; ?>
                                                 </button>
                                             </td>
@@ -95,3 +104,13 @@
     </div>
 </section>
 <!-- /.content -->
+
+<script>
+    document.getElementById('formGenerateGaji').addEventListener('submit', function () {
+        var button = document.getElementById('btnGenerateGaji');
+        var text = document.getElementById('textGenerateGaji');
+
+        button.disabled = true;
+        text.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Sedang Generate Gaji...';
+    });
+</script>
