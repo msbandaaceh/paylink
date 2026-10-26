@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * @property ModelGaji $model
+ */
+
 class HalamanPengaturan extends MY_Controller
 {
     public function kategori_potongan()
@@ -13,9 +17,9 @@ class HalamanPengaturan extends MY_Controller
         $data['kategori'] = $this->model->show_all_kategori();
 
         $this->load->view('header', $data);
-        $this->load->view('halamanpengaturan/sidebar');
-        $this->load->view('halamanpengaturan/daftar_kategori');
-        $this->load->view('footer');
+        $this->load->view('halamanpengaturan/sidebar', $data);
+        $this->load->view('halamanpengaturan/daftar_kategori', $data);
+        $this->load->view('footer', $data);
     }
 
     public function simpan_kategori()

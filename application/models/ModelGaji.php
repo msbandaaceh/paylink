@@ -285,13 +285,47 @@ class ModelGaji extends CI_Model
 
     public function get_data_peran()
     {
-        $this->db->select('l.id AS id, u.userid AS userid, u.fullname AS nama, l.role AS peran, l.hapus AS hapus');
-        $this->db->from('peran l');
-        $this->db->join($this->db_sso . '.v_users u', 'l.userid = u.userid', 'left');
-        $this->db->order_by('l.id', 'ASC');
-        $query = $this->db->get();
+        $api = $this->apihelper->get('apiclient/get_semua_user_aktif');
+        $users = $api['response']['data'] ?? $api['data'] ?? [];
 
-        return $query->result();
+        if (empty($users))
+            return [];
+
+        $filtered = [];
+        foreach ($users as $u) {
+            if ((int) ($u['status_pegawai'] ?? 0) === 1) {
+                $filtered[] = $u;
+            }
+        }
+
+        $role = $this->db
+            ->order_by('id', 'ASC')
+            ->get('peran')
+            ->result_array();
+
+        $role_map = [];
+        foreach ($role as $r) {
+            $role_map[$r['userid']][] = $r;
+        }
+
+        foreach ($filtered as $u) {
+            $uid = $u['userid'];
+            $list_pres = $role_map[$uid] ?? [null];
+
+            foreach ($list_pres as $p) {
+                if ($p != null) {
+                    $result[] = (object) [
+                        'id' => $r['id'],
+                        'userid' => $uid,
+                        'nama' => $u['fullname'],
+                        'peran' => $r['role'],
+                        'hapus' => $r['hapus']
+                    ];
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function get_all_months()

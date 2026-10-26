@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * @property ModelGaji $model
+ */
+
 class HalamanGaji extends MY_Controller
 {
     public function index()
@@ -26,9 +30,9 @@ class HalamanGaji extends MY_Controller
         );
 
         $this->load->view('header', $data);
-        $this->load->view('sidebar');
-        $this->load->view('halamangaji/daftar_bulan');
-        $this->load->view('footer');
+        $this->load->view('sidebar', $data);
+        $this->load->view('halamangaji/daftar_bulan', $data);
+        $this->load->view('footer', $data);
     }
 
     public function detail_gaji()
@@ -47,8 +51,8 @@ class HalamanGaji extends MY_Controller
         );
 
         $this->load->view('header', $data);
-        $this->load->view('sidebar');
-        $this->load->view('halamangaji/detail_gaji');
+        $this->load->view('sidebar', $data);
+        $this->load->view('halamangaji/detail_gaji', $data);
     }
 
     public function daftar_potongan_gaji()
@@ -69,9 +73,9 @@ class HalamanGaji extends MY_Controller
         );
 
         $this->load->view('header', $data);
-        $this->load->view('sidebar');
-        $this->load->view('halamanpotongangaji/daftar_potongan_gaji');
-        $this->load->view('footer');
+        $this->load->view('sidebar', $data);
+        $this->load->view('halamanpotongangaji/daftar_potongan_gaji', $data);
+        $this->load->view('footer', $data);
     }
 
     public function get_detail_potongan_gaji_bulanan_pegawai()
@@ -118,8 +122,8 @@ class HalamanGaji extends MY_Controller
         }
 
         $this->load->view('header', $data);
-        $this->load->view('sidebar');
-        $this->load->view('halamanpotongangaji/daftar_detail_potongan_gaji');
+        $this->load->view('sidebar', $data);
+        $this->load->view('halamanpotongangaji/daftar_detail_potongan_gaji', $data);
     }
 
     public function simpan_gaji_kotor()

@@ -1,5 +1,9 @@
-<?php
+<?php 
 defined('BASEPATH') or exit('No direct script access allowed');
+
+/**
+ * @property ModelGaji $model
+ */
 
 class HalamanUtama extends MY_Controller
 {
@@ -18,9 +22,9 @@ class HalamanUtama extends MY_Controller
         );
 
         $this->load->view('header', $data);
-        $this->load->view('sidebar');
-        $this->load->view('dashboard');
-        $this->load->view('footer');
+        $this->load->view('sidebar', $data);
+        $this->load->view('dashboard', $data);
+        $this->load->view('footer', $data);
     }
 
     public function show()

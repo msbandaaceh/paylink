@@ -3,7 +3,7 @@
 /**
  * @property CI_Config $config
  * @property CI_Input $input
- * @property CI_Model $model
+ * @property ModelGaji $model
  * @property CI_Model $api
  * @property CI_Encryption $encryption
  * @property CI_Session $session
